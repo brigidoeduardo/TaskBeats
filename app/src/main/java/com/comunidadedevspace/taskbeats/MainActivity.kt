@@ -23,6 +23,9 @@ class MainActivity : AppCompatActivity() {
 // Launch TaskDetailsView
     fun openTaskDetailsView (task :Task){
         val intent = Intent(this, TaskDetailsActivity::class.java)
+            .apply {
+                putExtra(TaskDetailsActivity.TASK_TITLE_EXTRA, task.title)
+            }
         startActivity(intent)
 
     }
