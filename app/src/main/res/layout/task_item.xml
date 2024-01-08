@@ -9,6 +9,7 @@
 
     <TextView
         android:id="@+id/tv_task_title"
+        android:textColor="@color/brown_900"
         tools:text="title sample"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -18,16 +19,11 @@
 
     <TextView
         android:id="@+id/tv_task_description"
+        android:textColor="@color/brown_700"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:text="description sample"
-        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="8dp"
-        android:background="@color/teal_200"
-        />
 </LinearLayout>
