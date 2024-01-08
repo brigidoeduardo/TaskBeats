@@ -29,21 +29,33 @@ class MainActivity : AppCompatActivity() {
             val taskAction = data?.getSerializableExtra(TASK_ACTION_RESULT) as TaskAction
             val task: Task = taskAction.task
 
-            val newList = arrayListOf<Task>()
-                .apply {
-                    addAll(taskList)
+            if (taskAction.actionType == ActionType.DELETE.name) {
+                val newList = arrayListOf<Task>()
+                    .apply {
+                        addAll(taskList)
+                    }
+
+                newList.remove(task)
+                showMessage(ctnContent, "Task ${task.title} deleted")
+
+                if (newList.size == 0) {
+                    ctnContent.visibility = View.VISIBLE
                 }
 
-            newList.remove(task)
+                adapter.submitList(newList)
+                taskList = newList
+            } else if (taskAction.actionType == ActionType.CREATE.name) {
+                val newList = arrayListOf<Task>()
+                    .apply {
+                        addAll(taskList)
+                    }
 
-            showMessage(ctnContent, "Task ${task.title} deleted")
+                newList.add(task)
+                showMessage(ctnContent, "Task ${task.title} added")
 
-            if(newList.size == 0) {
-                ctnContent.visibility = View.VISIBLE
+                adapter.submitList(newList)
+                taskList = newList
             }
-
-            adapter.submitList(newList)
-            taskList = newList
         }
     }
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -81,15 +93,15 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
-sealed class ActionType : Serializable {
-    object DELETE : ActionType ()
-    object UPDATE : ActionType ()
-    object CREATE : ActionType ()
+enum class ActionType {
+    DELETE,
+    UPDATE,
+    CREATE
 }
 
 data class TaskAction (
     val task : Task,
-    val actionType: ActionType
+    val actionType: String
 ) : Serializable
 
 const val TASK_ACTION_RESULT = "TASK_ACTION_RESULT"
