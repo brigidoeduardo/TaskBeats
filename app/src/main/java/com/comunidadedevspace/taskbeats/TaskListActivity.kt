@@ -2,24 +2,40 @@ package com.comunidadedevspace.taskbeats
 
 import android.app.Activity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.widget.LinearLayout
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
+import androidx.room.Dao
+import androidx.room.Room
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.launch
 import java.io.Serializable
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var ctnContent: LinearLayout
 
-    private var taskList = arrayListOf <Task>()
-
-    private lateinit var ctnContent : LinearLayout
-
-    // Adapter
     private val adapter: TaskListAdapter = TaskListAdapter(::onListItemClicked)
+
+    private val database by lazy {
+        Room.databaseBuilder(
+            applicationContext,
+            AppDatabase::class.java, "taskbeats-database"
+        ).build()
+    }
+
+    private val dao by lazy {
+        database.taskDao()
+    }
 
     private val startForResult = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -29,77 +45,82 @@ class MainActivity : AppCompatActivity() {
             val taskAction = data?.getSerializableExtra(TASK_ACTION_RESULT) as TaskAction
             val task: Task = taskAction.task
 
-            if (taskAction.actionType == ActionType.DELETE.name) {
-                val newList = arrayListOf<Task>()
-                    .apply {
-                        addAll(taskList)
-                    }
-
-                newList.remove(task)
-                showMessage(ctnContent, "Task ${task.title} deleted")
-
-                if (newList.size == 0) {
-                    ctnContent.visibility = View.VISIBLE
+            when (taskAction.actionType) {
+                ActionType.DELETE.name -> { deleteById(task.id)
+                    showMessage(ctnContent, "Task ${task.title} deleted")
                 }
-
-                adapter.submitList(newList)
-                taskList = newList
-            }else if (taskAction.actionType == ActionType.CREATE.name) {
-                val newList = arrayListOf<Task>()
-                    .apply {
-                        addAll(taskList)
-                    }
-
-                newList.add(task)
-                showMessage(ctnContent, "Task ${task.title} added")
-
-                adapter.submitList(newList)
-                taskList = newList
-            }else if (taskAction.actionType == ActionType.UPDATE.name) {
-                val tempEmptyList = arrayListOf<Task>()
-                taskList.forEach {
-                    if (it.id == task.id) {
-                        val newItem = Task(
-                            it.id,
-                            task.title,
-                            task.description
-                        )
-                        tempEmptyList.add(newItem)
-                    } else {
-                        tempEmptyList.add(it)
-                    }
+                ActionType.CREATE.name -> { insertIntoDataBase(task)
+                    showMessage(ctnContent, "Task ${task.title} created")
                 }
-                showMessage(ctnContent, "Task ${task.title} updated")
-                adapter.submitList(tempEmptyList)
-                taskList = tempEmptyList
+                ActionType.UPDATE.name -> { updateIntoDataBase(task)
+                    showMessage(ctnContent, "Task ${task.title} updated")
+                }
             }
         }
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_task_list)
+        setSupportActionBar(findViewById(R.id.toolbar))
 
+        listFromDataBase()
         ctnContent = findViewById(R.id.ctn_content)
 
-        adapter.submitList(taskList)
 
 // Recycler View
         val rvTasks: RecyclerView = findViewById(R.id.rv_task_list)
         rvTasks.adapter = adapter
 
         val fab: FloatingActionButton = findViewById(R.id.fab_add)
-        fab.setOnClickListener{
-           openTaskListDetail(null)
-           showMessage(it, "Add new task")
+        fab.setOnClickListener {
+            openTaskListDetail(null)
+            showMessage(it, "Add new task")
         }
     }
+
+    private fun insertIntoDataBase(task: Task) {
+        CoroutineScope(IO).launch {
+            dao.insert(task)
+            listFromDataBase()
+        }
+    }
+
+    private fun updateIntoDataBase(task: Task) {
+        CoroutineScope(IO).launch {
+            dao.update(task)
+            listFromDataBase()
+        }
+    }
+
+    private fun deleteAll (){
+        CoroutineScope(IO).launch {
+            dao.deleteAll()
+            listFromDataBase()
+        }
+    }
+
+    private fun deleteById (id:Int){
+        CoroutineScope(IO).launch {
+            dao.deleteById(id)
+            listFromDataBase()
+        }
+    }
+
+    private fun listFromDataBase() {
+        CoroutineScope(IO).launch {
+            val myDataBaseList: List<Task> = dao.getAll()
+            adapter.submitList(myDataBaseList)
+
+    }
+}
 
     private fun showMessage (view: View, message: String){
         Snackbar.make (view,message, Snackbar.LENGTH_LONG)
             .setAction("Action", null)
             .show()
     }
-// Launch TaskDetailsView
+
     private fun onListItemClicked (task :Task){
         openTaskListDetail(task)
     }
@@ -107,6 +128,21 @@ class MainActivity : AppCompatActivity() {
     private fun openTaskListDetail (task :Task? = null){
         val intent = TaskDetailsActivity.start(this,task)
         startForResult.launch(intent)
+    }
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.menu_task_list, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.delete_all_task -> {
+                deleteAll()
+                true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
     }
 }
 

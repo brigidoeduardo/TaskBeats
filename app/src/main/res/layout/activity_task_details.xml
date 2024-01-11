@@ -6,7 +6,7 @@
     tools:context=".TaskDetailsActivity"
     android:orientation="vertical">
 
-    <include layout="@layout/toolbar"/>
+    <include layout="@layout/toolbar" />
 
     <TextView
         android:text = "Task Title"
