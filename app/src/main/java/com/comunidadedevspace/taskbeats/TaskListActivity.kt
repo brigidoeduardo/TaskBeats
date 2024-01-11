@@ -22,8 +22,10 @@ import kotlinx.coroutines.launch
 import java.io.Serializable
 
 class MainActivity : AppCompatActivity() {
+
     private lateinit var ctnContent: LinearLayout
 
+    // Adapter
     private val adapter: TaskListAdapter = TaskListAdapter(::onListItemClicked)
 
     private val database by lazy {

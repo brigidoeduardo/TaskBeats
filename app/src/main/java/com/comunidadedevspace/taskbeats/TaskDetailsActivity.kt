@@ -65,8 +65,8 @@ class TaskDetailsActivity : AppCompatActivity() {
         description: String,
         actionType: ActionType
     ){
-        val Task = Task (0, title, description)
-        returnAction(Task, ActionType.CREATE)
+        val task = Task (0, title, description)
+        returnAction(task, ActionType.CREATE)
     }
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater: MenuInflater = menuInflater
