@@ -3,7 +3,6 @@ package com.comunidadedevspace.taskbeats
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -11,7 +10,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
-import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 
 class TaskDetailsActivity : AppCompatActivity() {
@@ -32,6 +31,7 @@ class TaskDetailsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_task_details)
+        setSupportActionBar(findViewById(R.id.toolbar))
 
         task = intent.getSerializableExtra(TASK_DETAIL_EXTRA) as Task?
 
@@ -48,19 +48,25 @@ class TaskDetailsActivity : AppCompatActivity() {
             val title = edtTitle.text.toString()
             val description = edtDescription.text.toString()
 
-            if (title.isNotEmpty() && description.isNotEmpty()){
-                addNewTask(title, description)
-            } else {
+            if (title.isNotEmpty() && description.isNotEmpty()) {
+                if (task == null) {
+                    addOrUpdateTask(0, title, description, ActionType.CREATE)
+                } else {
+                    addOrUpdateTask(task!!.id, title, description, ActionType.UPDATE)
+                }
+            }else {
                 showMessage(it, "Missing required fields")
             }
         }
-
-        //tvTitle = findViewById(R.id.tv_task_title")
-        //tvTitle.text = task?.title ?: "Add a task"
     }
-    private fun addNewTask (title: String, description: String){
-        val newTask = Task (0, title, description)
-        returnAction(newTask, ActionType.CREATE)
+    private fun addOrUpdateTask (
+        id: Int,
+        title: String,
+        description: String,
+        actionType: ActionType
+    ){
+        val Task = Task (0, title, description)
+        returnAction(Task, ActionType.CREATE)
     }
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater: MenuInflater = menuInflater
