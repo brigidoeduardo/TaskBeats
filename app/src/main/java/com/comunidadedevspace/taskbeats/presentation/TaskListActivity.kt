@@ -1,4 +1,4 @@
-package com.comunidadedevspace.taskbeats
+package com.comunidadedevspace.taskbeats.presentation
 
 import android.app.Activity
 import android.os.Bundle
@@ -11,13 +11,14 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
-import androidx.room.Dao
 import androidx.room.Room
+import com.comunidadedevspace.taskbeats.R
+import com.comunidadedevspace.taskbeats.data.AppDatabase
+import com.comunidadedevspace.taskbeats.data.Task
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import java.io.Serializable
 
@@ -48,15 +49,9 @@ class MainActivity : AppCompatActivity() {
             val task: Task = taskAction.task
 
             when (taskAction.actionType) {
-                ActionType.DELETE.name -> { deleteById(task.id)
-                    showMessage(ctnContent, "Task ${task.title} deleted")
-                }
-                ActionType.CREATE.name -> { insertIntoDataBase(task)
-                    showMessage(ctnContent, "Task ${task.title} created")
-                }
-                ActionType.UPDATE.name -> { updateIntoDataBase(task)
-                    showMessage(ctnContent, "Task ${task.title} updated")
-                }
+                ActionType.DELETE.name -> deleteById(task.id)
+                ActionType.CREATE.name -> insertIntoDataBase(task)
+                ActionType.UPDATE.name -> updateIntoDataBase(task)
             }
         }
     }
@@ -69,8 +64,6 @@ class MainActivity : AppCompatActivity() {
         listFromDataBase()
         ctnContent = findViewById(R.id.ctn_content)
 
-
-// Recycler View
         val rvTasks: RecyclerView = findViewById(R.id.rv_task_list)
         rvTasks.adapter = adapter
 
@@ -123,12 +116,12 @@ class MainActivity : AppCompatActivity() {
             .show()
     }
 
-    private fun onListItemClicked (task :Task){
+    private fun onListItemClicked (task : Task){
         openTaskListDetail(task)
     }
 
-    private fun openTaskListDetail (task :Task? = null){
-        val intent = TaskDetailsActivity.start(this,task)
+    private fun openTaskListDetail (task : Task? = null){
+        val intent = TaskDetailsActivity.start(this, task)
         startForResult.launch(intent)
     }
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
