@@ -1,6 +1,5 @@
-package com.comunidadedevspace.taskbeats.presentation
+package com.comunidadedevspace.taskbeats.presentation.taskdetails
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -10,9 +9,12 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.comunidadedevspace.taskbeats.R
 import com.comunidadedevspace.taskbeats.data.Task
+import com.comunidadedevspace.taskbeats.presentation.ActionType
+import com.comunidadedevspace.taskbeats.presentation.TaskAction
 import com.google.android.material.snackbar.Snackbar
 
 class TaskDetailsActivity : AppCompatActivity() {
@@ -20,6 +22,9 @@ class TaskDetailsActivity : AppCompatActivity() {
     private var task : Task? = null
     private lateinit var btnDone : Button
 
+    private val viewModel: TaskDetailsViewModel by viewModels {
+        TaskDetailsViewModel.getVMFactory(application)
+    }
     companion object{
         private const val TASK_DETAIL_EXTRA = "task.extra.detail"
         fun start(context : Context, task: Task?): Intent {
@@ -67,8 +72,8 @@ class TaskDetailsActivity : AppCompatActivity() {
         description: String,
         actionType: ActionType
     ){
-        val task = Task (id, title, description,)
-        returnAction(task, ActionType.CREATE)
+        val task = Task (id, title, description)
+        performAction(task, ActionType.CREATE)
     }
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater: MenuInflater = menuInflater
@@ -81,7 +86,7 @@ class TaskDetailsActivity : AppCompatActivity() {
             R.id.delete_task -> {
 
                 if (task != null) {
-                    returnAction(task!!, ActionType.DELETE)
+                    performAction(task!!, ActionType.DELETE)
                 } else {
                     showMessage(btnDone, "Item not found")
                 }
@@ -92,19 +97,14 @@ class TaskDetailsActivity : AppCompatActivity() {
             }
         }
 
-    private fun returnAction (task: Task, actionType: ActionType){
-        val intent = Intent()
-            .apply {
-                val taskAction = TaskAction(task, actionType.name)
-                putExtra("TASK_ACTION_RESULT", taskAction)
-            }
-        setResult(Activity.RESULT_OK, intent)
+    private fun performAction (task: Task, actionType: ActionType){
+        val taskAction = TaskAction(task, actionType.name)
+        viewModel.execute(taskAction)
         finish()
     }
-
-        fun showMessage(view: View, message: String) {
-            Snackbar.make(view, message, Snackbar.LENGTH_LONG)
+    fun showMessage(view: View, message: String) {
+        Snackbar.make(view, message, Snackbar.LENGTH_LONG)
                 .setAction("Action", null)
                 .show()
-        }
+    }
 }

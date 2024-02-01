@@ -1,4 +1,4 @@
-package com.comunidadedevspace.taskbeats.presentation
+package com.comunidadedevspace.taskbeats.presentation.news
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

@@ -1,4 +1,4 @@
-package com.comunidadedevspace.taskbeats.presentation
+package com.comunidadedevspace.taskbeats.presentation.tasklist
 
 import android.view.LayoutInflater
 import android.view.View
@@ -35,25 +35,5 @@ class TaskListAdapter (
                     oldItem.description == newItem.description
         }
     }
-}
-
-class TaskListViewHolder (
-    private val view: View
-) : RecyclerView.ViewHolder(view)
-    {
-    private val tvTaskTitle = view.findViewById<TextView>(R.id.tv_task_title)
-    private val tvTaskDescription = view.findViewById<TextView>(R.id.tv_task_description)
-
-    fun bind (
-        task: Task,
-        openTaskDetailsActivity: (task: Task) -> Unit)
-        {
-        tvTaskTitle.text = task.title
-        tvTaskDescription.text = task.description
-
-        view.setOnClickListener{
-            openTaskDetailsActivity.invoke(task)
-        }
-        }
 }
 

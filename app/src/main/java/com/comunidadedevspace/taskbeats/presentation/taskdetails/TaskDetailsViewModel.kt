@@ -1,27 +1,25 @@
-package com.comunidadedevspace.taskbeats.presentation
+package com.comunidadedevspace.taskbeats.presentation.taskdetails
 
 import android.app.Application
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.comunidadedevspace.taskbeats.TaskBeatsApplication
 import com.comunidadedevspace.taskbeats.data.Task
 import com.comunidadedevspace.taskbeats.data.TaskDao
+import com.comunidadedevspace.taskbeats.presentation.ActionType
+import com.comunidadedevspace.taskbeats.presentation.TaskAction
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class TaskListViewModel (
+class TaskDetailsViewModel (
     private val taskDao: TaskDao,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ): ViewModel() {
-
-    val taskListLiveData: LiveData <List<Task>> = taskDao.getAll()
-
     fun execute (taskAction: TaskAction){
         when (taskAction.actionType) {
             ActionType.DELETE.name -> deleteById(taskAction.task!!.id)
-            ActionType.DELETE_ALL.name -> deleteAll()
             ActionType.CREATE.name -> insertIntoDataBase(taskAction.task!!)
             ActionType.UPDATE.name -> updateIntoDataBase(taskAction.task!!)
         }
@@ -29,11 +27,6 @@ class TaskListViewModel (
     private fun deleteById (id:Int){
         viewModelScope.launch (dispatcher) {
             taskDao.deleteById(id)
-        }
-    }
-    private fun deleteAll (){
-        viewModelScope.launch(dispatcher) {
-            taskDao.deleteAll()
         }
     }
     private fun insertIntoDataBase(task: Task) {
@@ -47,15 +40,16 @@ class TaskListViewModel (
             taskDao.update(task)
         }
     }
-
-
-
-    companion object{
-        fun create (application: Application): TaskListViewModel {
+    companion object {
+        fun getVMFactory (application: Application): ViewModelProvider.Factory {
             val dataBaseInstance = (application as TaskBeatsApplication).getAppDataBase()
             val dao = dataBaseInstance.taskDao()
-            return TaskListViewModel(dao)
+            val factory = object : ViewModelProvider.Factory{
+                override fun <T:ViewModel> create (modelClass: Class <T>): T {
+                    return TaskDetailsViewModel(dao) as T
+                }
+            }
+            return factory
         }
     }
 }
-
