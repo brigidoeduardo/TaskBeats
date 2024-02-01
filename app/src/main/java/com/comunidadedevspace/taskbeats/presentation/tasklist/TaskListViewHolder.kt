@@ -8,8 +8,7 @@ import com.comunidadedevspace.taskbeats.data.Task
 
 class TaskListViewHolder (
     private val view: View
-) : RecyclerView.ViewHolder(view)
-{
+) : RecyclerView.ViewHolder(view) {
     private val tvTaskTitle = view.findViewById<TextView>(R.id.tv_task_title)
     private val tvTaskDescription = view.findViewById<TextView>(R.id.tv_task_description)
 
