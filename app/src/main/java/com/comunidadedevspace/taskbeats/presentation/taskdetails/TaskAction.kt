@@ -1,4 +1,4 @@
-package com.comunidadedevspace.taskbeats.presentation
+package com.comunidadedevspace.taskbeats.presentation.taskdetails
 
 import com.comunidadedevspace.taskbeats.data.Task
 import java.io.Serializable

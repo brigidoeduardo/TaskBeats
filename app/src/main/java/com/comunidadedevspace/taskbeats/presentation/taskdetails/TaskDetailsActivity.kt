@@ -13,8 +13,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.comunidadedevspace.taskbeats.R
 import com.comunidadedevspace.taskbeats.data.Task
-import com.comunidadedevspace.taskbeats.presentation.ActionType
-import com.comunidadedevspace.taskbeats.presentation.TaskAction
 import com.google.android.material.snackbar.Snackbar
 
 class TaskDetailsActivity : AppCompatActivity() {
