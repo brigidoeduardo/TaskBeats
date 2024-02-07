@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import coil.transform.RoundedCornersTransformation
 import com.comunidadedevspace.taskbeats.R
-import com.comunidadedevspace.taskbeats.data.News
+import com.comunidadedevspace.taskbeats.data.local.News
 
 class NewsListViewHolder (
     private val view: View

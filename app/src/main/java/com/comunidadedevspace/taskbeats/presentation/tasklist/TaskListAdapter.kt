@@ -3,11 +3,9 @@ package com.comunidadedevspace.taskbeats.presentation.tasklist
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.RecyclerView
 import com.comunidadedevspace.taskbeats.R
-import com.comunidadedevspace.taskbeats.data.Task
+import com.comunidadedevspace.taskbeats.data.local.Task
 
 class TaskListAdapter (
     private val openTaskDetailsActivity: (task: Task) -> Unit

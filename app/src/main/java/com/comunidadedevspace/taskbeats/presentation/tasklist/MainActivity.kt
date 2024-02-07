@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.commit
 import com.comunidadedevspace.taskbeats.R
-import com.comunidadedevspace.taskbeats.data.Task
 import com.comunidadedevspace.taskbeats.presentation.news.NewsListFragment
 import com.comunidadedevspace.taskbeats.presentation.taskdetails.TaskDetailsActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView

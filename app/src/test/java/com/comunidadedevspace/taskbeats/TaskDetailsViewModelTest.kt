@@ -1,12 +1,11 @@
 package com.comunidadedevspace.taskbeats
 
-import com.comunidadedevspace.taskbeats.data.Task
-import com.comunidadedevspace.taskbeats.data.TaskDao
+import com.comunidadedevspace.taskbeats.data.local.Task
+import com.comunidadedevspace.taskbeats.data.local.TaskDao
 import com.comunidadedevspace.taskbeats.presentation.taskdetails.ActionType
 import com.comunidadedevspace.taskbeats.presentation.taskdetails.TaskAction
 import com.comunidadedevspace.taskbeats.presentation.taskdetails.TaskDetailsViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test

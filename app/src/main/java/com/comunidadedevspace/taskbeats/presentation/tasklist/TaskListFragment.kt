@@ -1,15 +1,15 @@
 package com.comunidadedevspace.taskbeats.presentation.tasklist
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.comunidadedevspace.taskbeats.R
-import com.comunidadedevspace.taskbeats.data.Task
+import com.comunidadedevspace.taskbeats.data.local.Task
 import com.comunidadedevspace.taskbeats.presentation.taskdetails.TaskDetailsActivity
 
 class TaskListFragment : Fragment() {
@@ -39,6 +39,7 @@ class TaskListFragment : Fragment() {
         // Recycler View
         val rvTasks: RecyclerView = view.findViewById(R.id.rv_task_list)
         rvTasks.adapter = adapter
+
     }
 
     override fun onStart() {
@@ -49,7 +50,7 @@ class TaskListFragment : Fragment() {
     //Functions
     private fun listFromDataBase() {
 
-        val listObserver = Observer <List<Task>>{listTasks ->
+        val listObserver = Observer <List<Task>>{ listTasks ->
             if (listTasks.isEmpty()){
                 ctnContent.visibility = View.VISIBLE
             } else {
