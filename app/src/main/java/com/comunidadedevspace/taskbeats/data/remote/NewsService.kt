@@ -8,4 +8,7 @@ interface NewsService {
     @GET ("top?api_token=${BuildConfig.API_KEY}&locale=us")
     suspend fun fetchTopNews(): NewsResponse
 
+    @GET ("all?api_token=${BuildConfig.API_KEY}&locale=us")
+    suspend fun fetchAllNews(): NewsResponse
+
 }
