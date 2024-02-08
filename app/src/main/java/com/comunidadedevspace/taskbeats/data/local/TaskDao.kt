@@ -10,7 +10,7 @@ import androidx.room.Update
 @Dao
 interface TaskDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert (task: Task)
+    suspend fun insert(task: Task)
 
     @Query("SELECT * FROM task")
     fun getAll(): LiveData<List<Task>>
@@ -21,6 +21,6 @@ interface TaskDao {
     @Query("DELETE FROM task")
     suspend fun deleteAll()
 
-    @Query ("DELETE FROM task WHERE id=:id")
-    suspend fun deleteById (id:Int)
+    @Query("DELETE FROM task WHERE id=:id")
+    suspend fun deleteById(id: Int)
 }
