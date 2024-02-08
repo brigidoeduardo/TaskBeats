@@ -6,14 +6,13 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitModule {
 
-    fun createNewsService(){
+    fun createNewsService(): NewsService {
         val retrofit = Retrofit
             .Builder()
             .baseUrl("https://inshorts.deta.dev/")
             .addConverterFactory(GsonConverterFactory.create(Gson()))
-
-        retrofit
             .build()
+        return retrofit
             .create(NewsService::class.java)
     }
 }

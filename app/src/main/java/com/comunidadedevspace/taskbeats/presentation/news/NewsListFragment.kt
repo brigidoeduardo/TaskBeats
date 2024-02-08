@@ -7,10 +7,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.comunidadedevspace.taskbeats.R
+import com.comunidadedevspace.taskbeats.data.local.News
 
 class NewsListFragment : Fragment() {
 
     private val adapter = NewsListAdapter()
+
+    private val viewModel by lazy {
+        NewsListViewModel.create()
+    }
       override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -24,6 +29,16 @@ class NewsListFragment : Fragment() {
 
         val rvNews = view.findViewById<RecyclerView>(R.id.rvNews)
         rvNews.adapter = adapter
+
+        viewModel.newsListLiveData.observe(viewLifecycleOwner){ newsListDto ->
+            val newsList = newsListDto.map { newsDto ->
+                News (
+                    title = newsDto.title,
+                    imgUrl = newsDto.imageUrl
+                )
+            }
+            adapter.submitList(newsList)
+        }
 
     }
 
